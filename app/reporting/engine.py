@@ -504,6 +504,11 @@ def _finalize_presentation_only(
             ):
                 cell.value = None
     workbook.active = workbook.sheetnames.index(output_sheets[0])
+    # The template's tab bar may start at a later sheet (firstSheet=1). After other
+    # sheets are removed that index no longer exists, and Excel reports the file as corrupt.
+    for view in workbook.views:
+        view.firstSheet = 0
+        view.activeTab = workbook.sheetnames.index(output_sheets[0])
 
 
 def _write_raw_sheet(workbook, entries: list[NormalizedTimeEntry], profile: dict[str, Any]) -> None:

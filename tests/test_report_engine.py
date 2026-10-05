@@ -303,3 +303,33 @@ def test_output_has_no_references_to_removed_sheets(tmp_path):
     for name in archive.namelist():
         assert "Clockify Import" not in archive.read(name).decode("utf-8", "ignore"), name
     assert "$A9&gt;5" in archive.read("xl/worksheets/sheet1.xml").decode("utf-8")
+
+
+def test_first_sheet_index_valid_after_removing_sheets(tmp_path):
+    """firstSheet pointing past the last sheet makes Excel repair the file."""
+    import json
+    import zipfile
+
+    wb = Workbook()
+    wb.active.title = "Summary"
+    ws = wb.create_sheet("Timesheet")
+    wb.create_sheet("Clockify Import")
+    for column, value in enumerate(
+        ("Sr. No.", "Resource Name", "Date", "Time", "Date", "Time", "Duration (H:MM)", "Task", "Description / Comments"),
+        start=1,
+    ):
+        ws.cell(7, column).value = value
+    wb.views[0].firstSheet = 1
+    wb.views[0].activeTab = 1
+    template = tmp_path / "t.xlsx"
+    output = tmp_path / "o.xlsx"
+    wb.save(template)
+
+    profile = json.loads((Path(__file__).resolve().parent.parent / "config" / "profiles" / "cloud9_monthly.json").read_text())
+    entry = NormalizedTimeEntry(
+        project_name="Cloud 9 Flyer", user_name="Mfatir", description="work",
+        start=datetime(2026, 9, 2, 17, 30), end=datetime(2026, 9, 2, 20, 0), duration_seconds=9000,
+    )
+    generate_report(template, output, [entry], profile, "Mfatir", "Cloud9", datetime(2026, 9, 1), datetime(2026, 10, 1))
+    xml = zipfile.ZipFile(output).read("xl/workbook.xml").decode("utf-8")
+    assert 'firstSheet="0"' in xml and 'activeTab="0"' in xml
