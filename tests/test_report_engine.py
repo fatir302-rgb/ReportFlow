@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from pathlib import Path
 from zipfile import ZipFile
 
 from openpyxl import Workbook, load_workbook
@@ -6,7 +7,7 @@ from openpyxl.styles import Font
 
 from app.demo import create_demo_template, demo_entries
 from app.models import NormalizedTimeEntry
-from app.reporting.engine import generate_xlsx
+from app.reporting.engine import generate_report, generate_xlsx
 from app.reporting.profile import DEFAULT_PROFILE
 from app.generate_test_report import resolve_profile
 
@@ -257,3 +258,48 @@ def test_atm_link_helper_monthly_writes_values_in_template_calendar_format(tmp_p
     assert int(generated_ws["H181"].value.total_seconds()) == first.duration_seconds
     generated.close()
     wb.close()
+
+
+def test_output_has_no_references_to_removed_sheets(tmp_path):
+    """Excel shows a repair prompt if content points at a sheet ReportFlow deleted."""
+    import json
+    import zipfile
+    from openpyxl.formatting.rule import FormulaRule
+    from openpyxl.styles import PatternFill
+    from openpyxl.workbook.defined_name import DefinedName
+    from openpyxl.worksheet.datavalidation import DataValidation
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Timesheet"
+    for column, value in enumerate(
+        ("Sr. No.", "Resource Name", "Date", "Time", "Date", "Time", "Duration (H:MM)", "Task", "Description / Comments"),
+        start=1,
+    ):
+        ws.cell(7, column).value = value
+    helper = wb.create_sheet("Clockify Import")
+    helper.sheet_state = "hidden"
+    wb.defined_names["ImportRange"] = DefinedName("ImportRange", attr_text="'Clockify Import'!$A$7:$D$500")
+    ws.conditional_formatting.add(
+        "A9:I200", FormulaRule(formula=["ISNUMBER('Clockify Import'!$A7)"], fill=PatternFill(bgColor="DDDDDD"))
+    )
+    # A rule that only points at its own sheet must survive.
+    ws.conditional_formatting.add("A9:I200", FormulaRule(formula=["$A9>5"], fill=PatternFill(bgColor="EEEEEE")))
+    dv = DataValidation(type="list", formula1="'Clockify Import'!$B$7:$B$50")
+    ws.add_data_validation(dv)
+    dv.add("H9:H200")
+    template = tmp_path / "t.xlsx"
+    output = tmp_path / "o.xlsx"
+    wb.save(template)
+
+    profile = json.loads((Path(__file__).resolve().parent.parent / "config" / "profiles" / "cloud9_monthly.json").read_text())
+    entry = NormalizedTimeEntry(
+        project_name="Cloud 9 Flyer", user_name="Mfatir", description="work",
+        start=datetime(2026, 9, 2, 17, 30), end=datetime(2026, 9, 2, 20, 0), duration_seconds=9000,
+    )
+    generate_report(template, output, [entry], profile, "Mfatir", "Cloud9", datetime(2026, 9, 1), datetime(2026, 10, 1))
+
+    archive = zipfile.ZipFile(output)
+    for name in archive.namelist():
+        assert "Clockify Import" not in archive.read(name).decode("utf-8", "ignore"), name
+    assert "$A9&gt;5" in archive.read("xl/worksheets/sheet1.xml").decode("utf-8")
