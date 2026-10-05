@@ -1,0 +1,32 @@
+{
+  "renderer": "clockify_helper_calendar",
+  "sheet": "Auto Timesheet",
+  "output_sheets": ["Auto Timesheet"],
+  "resource_name_cell": "E2",
+  "month_anchor_cell": "D5",
+  "grand_total_cell": "H229",
+  "first_day_row": 5,
+  "base_detail_rows": 5,
+  "day_block_size": 7,
+  "raw_sheet": "Clockify Raw",
+  "raw_start_row": 2,
+  "raw_max_row": 1000,
+  "style_source_row": 2,
+  "raw_columns": {
+    "project": "A",
+    "description": "C",
+    "task": "D",
+    "user": "E",
+    "start_date": "J",
+    "start_time": "K",
+    "end_date": "L",
+    "end_time": "M",
+    "duration_text": "N",
+    "duration_decimal": "O"
+  },
+  "formats": {
+    "date": "yyyy-mm-dd",
+    "time": "h:mm AM/PM",
+    "duration": "[h]:mm"
+  }
+}

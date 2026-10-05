@@ -1,0 +1,30 @@
+{
+  "id": "atm_link_weekly_v1",
+  "renderer": "tabular",
+  "sheet": "Detailed Report",
+  "output_sheets": ["Detailed Report"],
+  "data_start_row": 4,
+  "style_source_row": 4,
+  "clear_extra_rows": 50,
+  "sort": {"field": "start", "direction": "desc"},
+  "title": {
+    "cell": "A1",
+    "template": "ATM LINK - Week {week_number} - {employee_name}"
+  },
+  "columns": {
+    "project": "A",
+    "description": "B",
+    "start_date": "C",
+    "start_time": "D",
+    "end_date": "E",
+    "end_time": "F",
+    "duration": "G",
+    "duration_decimal": "H"
+  },
+  "formats": {
+    "date": "yyyy-mm-dd",
+    "time": "hh:mm AM/PM",
+    "duration": "[h]:mm",
+    "decimal": "0.00"
+  }
+}

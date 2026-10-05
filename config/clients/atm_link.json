@@ -1,0 +1,20 @@
+{
+  "client_id": "atm_link",
+  "display_name": "ATM Link",
+  "reports": {
+    "weekly": {
+      "template": "templates/atm_link/weekly.xlsx",
+      "profile": "config/profiles/atm_link_weekly.json",
+      "output_extension": ".xlsx"
+    },
+    "monthly": {
+      "template": "templates/atm_link/monthly.xlsm",
+      "profile": "config/profiles/atm_link_monthly.json",
+      "output_extension": ".xlsm"
+    }
+  },
+  "source_filter": {
+    "mode": "all",
+    "note": "Placeholder until client-specific Clockify project inclusion rules are confirmed."
+  }
+}

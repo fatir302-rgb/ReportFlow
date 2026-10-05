@@ -1,0 +1,34 @@
+{
+  "renderer": "tabular",
+  "sheet": "Timesheet",
+  "output_sheets": ["Timesheet"],
+  "data_start_row": 9,
+  "style_source_row": 9,
+  "style_copy_columns": 9,
+  "clear_extra_rows": 0,
+  "sort": {"field": "start", "direction": "asc"},
+  "columns": {
+    "sequence": "A",
+    "user": "B",
+    "start_date": "C",
+    "start_time": "D",
+    "end_date": "E",
+    "end_time": "F",
+    "duration": "G",
+    "description": "H",
+    "project": "I"
+  },
+  "metadata": {
+    "employee_name": "C2",
+    "project_name": "C3",
+    "period_start": "L2",
+    "period_end": "L3"
+  },
+  "metadata_sheet": "Timesheet",
+  "period_end_offset_days": -1,
+  "formats": {
+    "date": "mm-dd-yy",
+    "time": "h:mm AM/PM",
+    "duration": "[h]:mm"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "sheet": "Timesheet",
+  "data_start_row": 8,
+  "style_source_row": 8,
+  "columns": {
+    "date": "A",
+    "project": "B",
+    "description": "C",
+    "start": "D",
+    "end": "E",
+    "duration": "F"
+  },
+  "metadata": {
+    "employee_name": "B2",
+    "project_name": "B3",
+    "period": "B4",
+    "total_hours": "F5"
+  },
+  "formats": {
+    "date": "dd-mmm-yyyy",
+    "time": "h:mm AM/PM",
+    "duration": "[h]:mm"
+  }
+}

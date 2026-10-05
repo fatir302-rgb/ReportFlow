@@ -1,0 +1,35 @@
+{
+  "name": "reportflow-web",
+  "version": "0.8.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack -H 127.0.0.1",
+    "build": "next build",
+    "start": "next start -H 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test:scheduling": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tests/scheduling.test.ts",
+    "test": "npm run typecheck && npm run test:scheduling",
+    "check:env": "node scripts/validate-env.mjs",
+    "check:env:production": "node scripts/validate-env.mjs --production",
+    "secure:env": "node scripts/secure-local-env.mjs",
+    "desktop:build": "powershell -NoProfile -ExecutionPolicy Bypass -File ../launcher/build-launcher.ps1",
+    "configure:microsoft": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/configure-microsoft.ps1"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.0.0",
+    "next": "^16.3.0",
+    "next-auth": "^5.0.0-beta.30",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.4",
+    "typescript": "^5.8.0"
+  }
+}
